@@ -67,6 +67,7 @@ cd ~/ros2_ws/src
 
 ```bash
 cd ~/ros2_ws
+rm -rf ~/.ros/log/*
 source /opt/ros/humble/setup.bash
 colcon build --packages-select my_robot_description
 source install/setup.bash

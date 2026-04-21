@@ -1,20 +1,45 @@
-# my_robot_description
+# 🤖 My Robot Description - ROS 2 Simulation Package
 
-ROS 2 package mo phong robot banh xich co canh tay 2 khop trong Gazebo.
+![Ubuntu 22.04](https://img.shields.io/badge/Ubuntu-22.04-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+![ROS 2 Humble](https://img.shields.io/badge/ROS_2-Humble-34a853?style=for-the-badge&logo=ros&logoColor=white)
+![Gazebo](https://img.shields.io/badge/Gazebo-Classic-FFB200?style=for-the-badge&logo=gazebo&logoColor=black)
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
-Package hien tai gom:
+---
 
-- Mo hinh URDF + mesh cua robot
-- Camera, lidar, IMU
-- Diff-drive cho de robot bang ban phim
-- `ros2_control` cho 2 khop tay `l1`, `l2`
-- Node `arm_controller` de nhap goc cho canh tay
+## 📌 Giới thiệu
 
-## 1. Yeu cau
+Package `my_robot_description` là một môi trường mô phỏng robot bánh xích tích hợp tay máy 2 bậc tự do trong Gazebo.
 
-Moi truong da kiem tra voi ROS 2 Humble.
+Hệ thống bao gồm:
 
-Can cac goi sau:
+- Mô hình **URDF + mesh**
+- Tích hợp **Camera, LiDAR, IMU**
+- Điều khiển **diff-drive bằng bàn phím**
+- Sử dụng **ros2_control** cho 2 khớp tay `l1`, `l2`
+- Node `arm_controller` để nhập góc điều khiển tay máy
+
+---
+
+## ✨ Thành phần chính
+
+- 🚗 Robot bánh xích (Tracked Robot)
+- 🤖 Tay máy 2 khớp quay
+- 📡 Hệ thống cảm biến:
+  - LiDAR (`/scan`)
+  - Camera (`/camera/image_raw`)
+  - IMU (`/imu`)
+- 🎮 Điều khiển:
+  - Bàn phím (`cmd_vel`)
+  - Nhập góc tay máy
+
+---
+
+## 🛠️ 1. Yêu cầu hệ thống (Prerequisites)
+
+Môi trường đã kiểm tra với **ROS 2 Humble**
+
+### Cài đặt dependencies
 
 ```bash
 sudo apt update
@@ -28,16 +53,15 @@ sudo apt install -y \
   ros-humble-rviz2 \
   ros-humble-turtlebot3-gazebo \
   ros-humble-teleop-twist-keyboard
-```
 
-Neu chua co workspace:
+Nếu chưa có workspace:
 
 ```bash
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 ```
 
-Dat package `my_robot_description` vao trong `~/ros2_ws/src`.
+Đặt package `my_robot_description` vào trong `~/ros2_ws/src`.
 
 ## 2. Build Package
 
@@ -48,14 +72,14 @@ colcon build --packages-select my_robot_description
 source install/setup.bash
 ```
 
-Moi terminal moi deu nen chay:
+Mỗi terminal mới đều nên chạy:
 
 ```bash
 source /opt/ros/humble/setup.bash
 source ~/ros2_ws/install/setup.bash
 ```
 
-## 3. Chay Gazebo
+## 3. Run Gazebo
 
 ```bash
 cd ~/ros2_ws
@@ -64,19 +88,19 @@ source install/setup.bash
 ros2 launch my_robot_description gazebo.launch.py
 ```
 
-Launch nay se:
+Launch nay sẽ:
 
 - Nap `robot_description`
 - Mo Gazebo voi `turtlebot3_world`
-- Spawn robot vao the gioi
-- Khoi tao `joint_state_broadcaster`
-- Khoi tao `joint_position_controller` cho canh tay
+- Spawn robot vào thế giới
+- Khởi tạo `joint_state_broadcaster`
+- Khởi tạo `joint_position_controller` cho cánh tay
 
-## 4. Dieu Khien De Robot Bang Ban Phim
+## 4. Điều khiển Robot di chuyển bằng bàn phím
 
-Robot su dung plugin `gazebo_ros_diff_drive`, vi vay co the dieu khien bang `cmd_vel`.
+Robot sử dụng plugin `gazebo_ros_diff_drive`, vì vậy có thể điều khiển bằng `cmd_vel`.
 
-Mo terminal moi:
+Mở terminal mới:
 
 ```bash
 cd ~/ros2_ws
@@ -85,19 +109,19 @@ source install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
-Node nay mac dinh publish len `/cmd_vel`, phu hop voi diff-drive trong URDF.
+Node này mặc định publish lên `/cmd_vel`, phù hợp với diff-drive trong URDF.
 
-Phim hay dung:
+Phím hay dùng:
 
-- `i`: tien
-- `,`: lui
-- `j`: quay trai
-- `l`: quay phai
-- `k`: dung
+- `i`: tiến
+- `,`: lùi
+- `j`: quay trái
+- `l`: quay phải
+- `k`: dừng
 
-## 5. Dieu Khien Canh Tay
+## 5. Điều Khiển Cánh Tay
 
-Mo terminal moi:
+Mở terminal mới:
 
 ```bash
 cd ~/ros2_ws
@@ -106,47 +130,49 @@ source install/setup.bash
 ros2 run my_robot_description arm_controller
 ```
 
-Node `arm_controller` publish len topic:
+Node `arm_controller` publish lên topic:
 
 ```bash
 /joint_position_controller/commands
 ```
 
-Cach nhap:
+Cách nhập:
 
 ```text
 l1 l2
 ```
 
-Vi du:
+Ví dụ:
 
 ```text
 0.5 0.3
 1.0 1.2
 ```
 
-Y nghia:
+Ý nghĩa:
 
-- Robot dua `l1` toi goc muc tieu
-- Cho 2 giay
-- Sau do dua `l2` toi goc muc tieu
+- Robot đưa `l1` tới góc mục tiêu  
+- Chờ 2 giây  
+- Sau đó đưa `l2` tới góc mục tiêu  
 
-Gioi han hien tai:
+Giới hạn hiện tại:
 
-- `l1`: `-0.4 -> 1.57` rad
-- `l2`: `-0.4 -> 1.57` rad
+- `l1`: `-0.4 -> 1.57` rad  
+- `l2`: `-0.4 -> 1.57` rad  
 
-Nhap:
+Nhập:
 
 ```text
 q
 ```
 
-de thoat node.
+để thoát node.
+
+---
 
 ## 6. Xem Robot Trong RViz
 
-Neu muon xem nhanh model trong RViz thay vi Gazebo:
+Nếu muốn xem nhanh model trong RViz thay vì Gazebo:
 
 ```bash
 cd ~/ros2_ws
@@ -155,62 +181,67 @@ source install/setup.bash
 ros2 launch my_robot_description display.launch.py
 ```
 
-## 7. Topic Huu Ich
+---
 
-Kiem tra topic:
+## 7. Topic Hữu Ích
+
+Kiểm tra topic:
 
 ```bash
 ros2 topic list
 ```
 
-Mot so topic quan trong:
+Một số topic quan trọng:
 
-- `/cmd_vel`
-- `/joint_states`
-- `/joint_position_controller/commands`
-- `/scan`
-- `/camera/image_raw`
-- `/camera/camera_info`
-- `/imu`
+- `/cmd_vel`  
+- `/joint_states`  
+- `/joint_position_controller/commands`  
+- `/scan`  
+- `/camera/image_raw`  
+- `/camera/camera_info`  
+- `/imu`  
 
-## 8. Lenh Kiem Tra Nhanh
+---
 
-Kiem tra controller:
+## 8. Lệnh Kiểm Tra Nhanh
+
+Kiểm tra controller:
 
 ```bash
 ros2 control list_controllers
 ```
 
-Kiem tra joint state:
+Kiểm tra joint state:
 
 ```bash
 ros2 topic echo /joint_states --once
 ```
 
-Kiem tra camera:
+Kiểm tra camera:
 
 ```bash
 ros2 topic echo /camera/camera_info --once
 ```
 
-Kiem tra lidar:
+Kiểm tra lidar:
 
 ```bash
 ros2 topic echo /scan --once
 ```
 
-## 9. Thu Tu Chay Day Du
+---
 
-Terminal 1:
+## 9. Thứ Tự Chạy Đầy Đủ
 
+**Terminal 1:**
 ```bash
 cd ~/ros2_ws
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 ros2 launch my_robot_description gazebo.launch.py
 ```
-Terminal 2:
 
+**Terminal 2:**
 ```bash
 cd ~/ros2_ws
 source /opt/ros/humble/setup.bash
@@ -218,8 +249,7 @@ source install/setup.bash
 ros2 launch my_robot_description display.launch.py
 ```
 
-Terminal 3:
-
+**Terminal 3:**
 ```bash
 cd ~/ros2_ws
 source /opt/ros/humble/setup.bash
@@ -227,52 +257,54 @@ source install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
-Terminal 4:
-
+**Terminal 4:**
 ```bash
 cd ~/ros2_ws
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 ros2 run my_robot_description arm_controller
 ```
-Read data from Sensor:
+
+Đọc dữ liệu từ sensor:
 
 ```bash
 ros2 topic echo /imu
 ros2 topic echo /scan
 ```
 
-## 10. Loi Thuong Gap
+---
 
-`ros2 run my_robot_description arm_controller` khong chay:
+## 10. Lỗi Thường Gặp
 
-- Kiem tra da `colcon build`
-- Kiem tra da `source install/setup.bash`
+`ros2 run my_robot_description arm_controller` không chạy:
 
-Controller bi treo o `waiting for service /controller_manager/list_controllers`:
+- Kiểm tra đã `colcon build`  
+- Kiểm tra đã `source install/setup.bash`  
 
-- Tat Gazebo cu
-- Build lai package
-- Launch lai tu dau
+Controller bị treo ở `waiting for service /controller_manager/list_controllers`:
 
-Robot khong di duoc bang ban phim:
+- Tắt Gazebo cũ  
+- Build lại package  
+- Launch lại từ đầu  
 
-- Kiem tra `teleop_twist_keyboard` da cai
-- Kiem tra topic `/cmd_vel` co du lieu:
+Robot không đi được bằng bàn phím:
+
+- Kiểm tra `teleop_twist_keyboard` đã cài  
+- Kiểm tra topic `/cmd_vel` có dữ liệu:
 
 ```bash
 ros2 topic echo /cmd_vel
 ```
 
-Canh tay khong nhuc nhich:
+Cánh tay không nhúc nhích:
 
-- Kiem tra controller:
+- Kiểm tra controller:
 
 ```bash
 ros2 control list_controllers
 ```
 
-- Kiem tra topic lenh:
+- Kiểm tra topic lệnh:
 
 ```bash
 ros2 topic echo /joint_position_controller/commands
